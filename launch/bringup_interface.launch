@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<launch>
+  <arg name="load_gripper" default="true" />
+  <arg name="launch_rviz" default="true" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world panda_link0" />
+
+    <include file="$(find assembly_benchmark_ros)/launch/wrist_realsense.launch" />
+    <include file="$(find assembly_benchmark_ros)/launch/top_realsense.launch" />
+
+    <include file="$(find apriltag_ros)/launch/continuous_detection.launch">
+        <arg name="camera_name" value="top_camera/color" />
+        <arg name="image_topic" value="image_raw" />
+        <arg name='topic_prefix' value='top_camera/' />
+        <arg name='node_prefix' value='top_' />
+    </include>
+
+    <include file="$(find apriltag_ros)/launch/continuous_detection.launch">
+        <arg name="image_topic" value="image_raw" />
+        <arg name="camera_name" value="wrist_camera/color" />
+        <arg name='topic_prefix' value='wrist_camera/' />
+        <arg name='node_prefix' value='wrist_' />
+    </include>
+
+  <!-- If needed, broadcast static tf for robot root -->
+
+  <!-- <node name="joint_state_desired_publisher" pkg="topic_tools" type="relay" args="joint_states joint_states_desired" /> -->
+  <include file="$(find panda_moveit_config)/launch/move_group.launch">
+    <arg name="load_gripper" value="$(arg load_gripper)" />
+  </include>
+
+  <include file="$(find panda_moveit_config)/launch/moveit_rviz.launch" if="$(arg launch_rviz)" />
+</launch>

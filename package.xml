@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ramp</name>
+  <version>0.0.1</version>
+  <description>RAMP package</description>
+
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <!-- Example:  -->
+  <maintainer email="jyamada@robots.ox.ac.uk">Jun Yamada</maintainer>
+
+
+  <!-- One license tag required, multiple allowed, one license per tag -->
+  <!-- Commonly used license strings: -->
+  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>
