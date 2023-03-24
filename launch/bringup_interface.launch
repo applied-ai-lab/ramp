@@ -4,8 +4,8 @@
   <arg name="launch_rviz" default="true" />
   <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world panda_link0" />
 
-    <include file="$(find assembly_benchmark_ros)/launch/wrist_realsense.launch" />
-    <include file="$(find assembly_benchmark_ros)/launch/top_realsense.launch" />
+    <include file="$(find ramp)/launch/wrist_realsense.launch" />
+    <include file="$(find ramp)/launch/top_realsense.launch" />
 
     <include file="$(find apriltag_ros)/launch/continuous_detection.launch">
         <arg name="camera_name" value="top_camera/color" />
