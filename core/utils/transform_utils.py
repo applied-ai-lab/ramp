@@ -1,6 +1,7 @@
 """
 Utility functions of matrix and vector transformations.
 NOTE: convention for quaternions is (x, y, z, w)
+Reference: https://github.com/ARISE-Initiative/robosuite/blob/master/robosuite/utils/transform_utils.py
 """
 
 import math
