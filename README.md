@@ -1,5 +1,5 @@
 # RAMP: A Benchmark for Evaluating Robotic Assembly Manipulation and Planning
-A codebase for baseline to evalute robotic assembly benachmrk.
+A baseline approach to solving the easy class of assemblies in the RAMP benchmark.
 
 ![Teaser figure](./media/assembly_timelapse.png)
 
