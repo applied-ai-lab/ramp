@@ -3,9 +3,6 @@ import numpy as np
 
 from core.agent import Agent
 import argparse
-# from sparc_planning.src.example_domains.example_latest import generate_domain_setup
-# from sparc_planning.src.example_domains.example_easy_1 import generate_domain_setup
-from sparc_planning.src.example_domains.example_easy_2 import generate_domain_setup
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
