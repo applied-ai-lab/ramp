@@ -18,7 +18,7 @@ docker run -it -d --net=host --gpus all -e HOST_UID=${UID} -e USER=${USER} -e DI
 docker exec -it assembly_benchmark zsh
 ```
 ### High-level planner setup
-To setup a high-level planner, please refer to [here](https://github.com/M-A-Robson/MTC_ORI_Collab).
+To setup a high-level planner, please refer to [here](https://github.com/applied-ai-lab/ramp-planner).
 
 ### ROS library installation
 
