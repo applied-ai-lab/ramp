@@ -387,7 +387,8 @@ class Agent:
                         # move to the peg input pose
                         self.interface.move_to_peg(target)
                     else:
-                        raise NotImplementedError
+                        pass
+                        # raise ValueError("{}, target: {}".format(abst_action, target))
                 elif abst_action == "pick_up_f":  # Pick up action
                     target = action_args[0]
                     if re.search("(b\d*)(l\d*)", target):
@@ -428,7 +429,7 @@ class Agent:
                         )
                     self.interface.push(target, connected_beam_joint, pre_cap)
                 else:
-                    raise NotImplementedError
+                    raise ValueError(abst_action)
         self.interface.put_down()
         self.interface.move_to_intermediate_area()
 

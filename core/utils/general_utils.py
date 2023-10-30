@@ -9,7 +9,6 @@ from functools import partial, reduce
 import collections
 from collections import OrderedDict
 
-from core.utils import ndim
 
 
 class AttrDict(dict):

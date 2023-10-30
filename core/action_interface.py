@@ -114,10 +114,11 @@ class ActionInterface(object):
 
         # open the gripper and move above the target link
         self.robot.gripper.open()
-        self.robot.move_to_cartesian_pose([pos[0], pos[1], 0.15])
+        self.robot.move_to_cartesian_pose([pos[0], pos[1], 0.1])
 
         # close the gripper slightly so that the gripper does not hit to other objects
-        self.robot.gripper.move_joints(0.035)
+        # self.robot.gripper.move_joints(0.035)
+        self.robot.gripper.move_joints(0.04)
         self.robot.move_to_cartesian_pose([pos[0], pos[1], 0.035])
         # grasp the beam
         self.robot.gripper.grasp(0.01, force=80)
@@ -211,11 +212,13 @@ class ActionInterface(object):
         self.move_neutral_ori()
         beam_id = self.get_beam_id(target)
 
-        marker_pose = self.get_marker_pose(self.beams[beam_id].origin_id)
-        self.robot.move_to_cartesian_pose(
-            [marker_pose.position.x - 0.01, marker_pose.position.y, 0.2]
-        )
-        rospy.sleep(0.5)
+        success = False
+        while not success:
+            marker_pose = self.get_marker_pose(self.beams[beam_id].origin_id)
+            success = self.robot.move_to_cartesian_pose(
+                [marker_pose.position.x - 0.01, marker_pose.position.y, 0.2]
+            )
+        rospy.sleep(1.5)
 
     def move_to_peg(self, target):
         """
@@ -227,14 +230,17 @@ class ActionInterface(object):
         print("Moving to the peg {}".format(target))
         peg_id = re.match("(p\d*)i", target)[1]
         marker_id = self.pegs[peg_id]
-        marker_pose = self.get_marker_pose(marker_id)
-        self.robot.move_to_cartesian_pose(
-            [
-                marker_pose.position.x,
-                marker_pose.position.y,
-                marker_pose.position.z + 0.15,
-            ]
-        )
+        success = False
+        while not success:
+            marker_pose = self.get_marker_pose(marker_id)
+            success = self.robot.move_to_cartesian_pose(
+                [
+                    marker_pose.position.x,
+                    marker_pose.position.y,
+                    marker_pose.position.z + 0.15,
+                ]
+            )
+        rospy.sleep(1.5)
         self.move_neutral_ori()
         return True
 
@@ -251,7 +257,11 @@ class ActionInterface(object):
         self.robot.gripper.open()
 
         self.robot.move_to_cartesian_pose(
-            [marker_pose.position.x, marker_pose.position.y, 0.085]
+            [marker_pose.position.x, marker_pose.position.y, 0.14]
+        )
+
+        self.robot.move_to_cartesian_pose(
+            [marker_pose.position.x+0.005, marker_pose.position.y, 0.085]
         )
         self.robot.gripper.grasp(0.01, force=100)
         rospy.sleep(0.5)
@@ -285,18 +295,22 @@ class ActionInterface(object):
         pose1 = self.get_beam_joint_pose(beam1_id, beam1_joint_id)
         pose2 = self.get_beam_joint_pose(beam2_id, beam2_joint_id)
         pos = (mat2pose(pose1)[0] + mat2pose(pose2)[0]) / 2.0
-        self.robot.move_to_cartesian_pose([pos[0] - 0.03, pos[1], 0.25])
+        # self.robot.move_to_cartesian_pose([pos[0] - 0.03, pos[1], 0.2])
+        self.robot.move_to_cartesian_pose([pos[0] - 0.03, pos[1], 0.16])
+
+        rospy.sleep(1.)
 
         # Observe a sequence of hole poses and average them to acquire the accurate hole pose.
         pos_list = []
-        for _ in range(20):
+        for _ in range(100):
             pose1 = self.get_beam_joint_pose(beam1_id, beam1_joint_id)
             pose2 = self.get_beam_joint_pose(beam2_id, beam2_joint_id)
             pos = (mat2pose(pose1)[0] + mat2pose(pose2)[0]) / 2.0
-            rospy.sleep(0.05)
+            rospy.sleep(0.01)
             pos_list.append(pos)
         pos = np.mean(pos_list, axis=0)
-        self.robot.move_to_cartesian_pose([pos[0] + 0.005, pos[1], 0.12])
+        # self.robot.move_to_cartesian_pose([pos[0] + 0.005, pos[1], 0.12])
+        self.robot.move_to_cartesian_pose([pos[0], pos[1] + 0.01, 0.115])
 
         current_pose = self.robot.tip_pose()
         base_ori = current_pose.orientation
@@ -317,16 +331,17 @@ class ActionInterface(object):
             max_timesteps = 120
             current_pos = self.robot.tip_pose().position
             # Apply spiral search for the peg insertion
-            pring("Searching the hole...")
+            print("Searching the hole...")
             for t in range(max_timesteps):
                 rad = math.radians(t * 4)
-                x = 0.005 * math.exp(0.02 * rad) * math.cos(rad)
-                y = 0.005 * math.exp(0.02 * rad) * math.sin(rad)
+                x = 0.005 * math.exp(0.015 * rad) * math.cos(rad)
+                y = 0.005 * math.exp(0.015 * rad) * math.sin(rad)
                 desired_pos = np.array(
                     [
                         current_pos[0] + x,
                         current_pos[1] + y,
-                        self.robot.tip_pose().position[2] - 0.005,
+                        # self.robot.tip_pose().position[2] - 0.005,
+                        self.robot.tip_pose().position[2] - 0.003,
                     ]
                 )
                 self.exec_pose_cmd(pos=desired_pos, ori=base_ori)
@@ -599,13 +614,17 @@ class ActionInterface(object):
         base_ori = self.robot.tip_pose().orientation
         connect = False
         # Move to the target pose with an impedance controller
+
+        self.robot.move_to_cartesian_delta([0, -np.sin(beam_angles[-1]) * 0.01, 0.])
+        base_pos[1] -= np.sin(beam_angles[-1]*0.01)
         while not connect:
             current_pose = self.robot.tip_pose()
             desired_position = current_pose.position
-            desired_position[0] -= 0.008
+            desired_position[0] -= 0.01
             self.exec_pose_cmd(
                 [desired_position[0], base_pos[1], base_pos[2]], ori=base_ori
             )
+            print(self.robot.tip_effort().force[0])
             connect = np.abs(self.robot.tip_effort().force[0]) > 8.0
         print("Hit to the surface of the beam")
 
@@ -614,15 +633,21 @@ class ActionInterface(object):
         base_pos = base_pose.position
         # Search the target beam joint to connect the beams.
         print("Searching the target beam joint to connect the grasped beam...")
+        # while (
+        #     current_pose.position[:1] - self.beams["{}t".format(grasped_beam_id)][:1, 3]
+        #     > 0.01
+        #     or np.abs(self.robot.tip_effort().force[0]) < 8.0
+        # ):  # FIXME
         while (
             current_pose.position[:1] - self.beams["{}t".format(grasped_beam_id)][:1, 3]
             > 0.01
-            or np.abs(self.robot.tip_effort().force[0]) < 8.0
+            and np.abs(self.robot.tip_effort().force[0]) < 10.0
         ):  # FIXME
             current_pose = self.robot.tip_pose()
             current_pos = current_pose.position
             rad = math.radians(t * 4)
-            y = 0.01 * math.exp(0.06 * rad) * math.sin(rad)
+            # y = 0.01 * math.exp(0.06 * rad) * math.sin(rad)
+            y = 0.005 * math.exp(0.06 * rad) * math.sin(rad)
             desired_pos = np.array(
                 [current_pos[0] - 0.004, base_pos[1] + y, base_pos[2]]
             )
@@ -636,8 +661,10 @@ class ActionInterface(object):
         while not connect:
             current_pose = self.robot.tip_pose()
             desired_position = current_pose.position
-            desired_position[0] -= 0.008
-            desired_position[1] += np.sin(beam_angles[-1]) * 0.008
+            desired_position[0] -= 0.007
+            # desired_position[0] -= 0.02
+            desired_position[1] += np.sin(beam_angles[-1]) * 0.007
+            # desired_position[1] += np.sin(beam_angles[-1]) * 0.02
             self.exec_pose_cmd(
                 np.array([desired_position[0], desired_position[1], base_pos[2]]),
                 ori=base_ori,
@@ -651,6 +678,7 @@ class ActionInterface(object):
         Put down the grasped object
         """
         print("Put down the grasped object")
+        self.exec_pose_delta_cmd(np.array([0, 0, 0.05]))
         self.exec_pose_delta_cmd(np.array([0, 0, 0.0]))
         rospy.sleep(0.5)
         self.robot.switch_controllers("position_joint_trajectory_controller")
@@ -740,7 +768,7 @@ class ActionInterface(object):
         target_beam_z_angle = quat2axisangle(target_beam_quat)[-1]
 
         # self.robot.move_to_cartesian_delta([0, -0.005, 0])
-        self.robot.move_to_cartesian_delta([0, -0.008, 0])
+        # self.robot.move_to_cartesian_delta([0, -0.008, 0])
         self.robot.move_to_cartesian_delta([-0.015, 0, 0])
 
         rospy.sleep(0.5)
@@ -765,8 +793,11 @@ class ActionInterface(object):
                 and np.linalg.norm(
                     target_beam_pos[0] - self.robot.tip_pose().position[0]
                 )
-                < 0.008
+                < 0.003
             )
+            print(np.linalg.norm(
+                    target_beam_pos[0] - self.robot.tip_pose().position[0]
+                ))
             t += 1
             if t > 50:
                 break
@@ -823,7 +854,7 @@ class ActionInterface(object):
             self.exec_pose_cmd(
                 np.array([base_pos[0], desired_position[1], base_pos[2]]), ori=base_ori
             )
-            pushed = np.abs(self.robot.tip_effort().force[1]) > 3.5
+            pushed = np.abs(self.robot.tip_effort().force[1]) > 4
 
             # if the beam is not capped yet, the robot should not push the beam too much
             if not pre_cap:
@@ -922,7 +953,7 @@ class ActionInterface(object):
         args:
             beam (str): A beam id with a joint or link id
         """
-        group = re.match("(b\d*)(.*)", target)
+        group = re.match("(b\d*)(.*)", beam)
         beam_id = group[1]
         return beam_id
 
@@ -930,6 +961,7 @@ class ActionInterface(object):
         """
         Record the fixed beam origin pose and the pose of the marker_id 0.
         """
+        rospy.sleep(1.0)
         self.fixed_beam_origin = self.get_beam_joint_pose(self.fixed_beam_id, "j1")
         self.input_origin = self.get_marker_pose(0)
 

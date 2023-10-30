@@ -42,7 +42,8 @@ Processing enabled by this node:
 
   <!-- Camera device specific arguments -->
 
-  <arg name="serial_no"           default="819312071969"/>
+  <!-- <arg name="serial_no"           default="814412070548"/> -->
+  <arg name="serial_no"           default="844212071682"/>
   <arg name="usb_port_id"         default=""/>
   <arg name="device_type"         default=""/>
   <arg name="json_file_path"      default=""/>

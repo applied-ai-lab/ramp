@@ -149,14 +149,14 @@ BEAMS = {
             j5=np.array([0, -0.4936, 0]),
         ),
         link_offsets=AttrDict(
-            # l1=np.array([0, -0.0582, 0]),
-            l1=np.array([0, -0.0482, 0]),
-            # l2=np.array([0, -0.1942, 0]),
-            l2=np.array([0, -0.1842, 0]),
-            # l3=np.array([0, -0.2994, 0]),
-            l3=np.array([0, -0.29, 0]),
-            # l4=np.array([0, -0.4354, 0]),
-            l4=np.array([0, -0.4254, 0]),
+            l1=np.array([0, -0.0582, 0]),
+            # l1=np.array([0, -0.0482, 0]),
+            l2=np.array([0, -0.1942, 0]),
+            # l2=np.array([0, -0.1842, 0]),
+            l3=np.array([0, -0.2994, 0]),
+            # l3=np.array([0, -0.29, 0]),
+            l4=np.array([0, -0.4354, 0]),
+            # l4=np.array([0, -0.4254, 0]),
         ),
     ),
     "b9": AttrDict(
@@ -184,4 +184,4 @@ BEAMS = {
     ),
 }
 
-PEGS = AttrDict(p1=17, p2=18, p3=19, p4=21, p5=22, p6=23)
+PEGS = AttrDict(p1=19, p2=21, p3=22, p4=23, p5=24, p6=25)

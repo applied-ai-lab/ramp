@@ -42,7 +42,7 @@ Processing enabled by this node:
 
   <!-- Camera device specific arguments -->
 
-  <arg name="serial_no"           default="825312070694"/>
+  <arg name="serial_no"           default="819312071969"/>
   <arg name="usb_port_id"         default=""/>
   <arg name="device_type"         default=""/>
   <arg name="json_file_path"      default=""/>
@@ -210,10 +210,10 @@ Processing enabled by this node:
       <!--     args="0.689578 0.0373298 1.20713   0.717935 0.693806 -0.0483092 -0.0294837 /world /camera_link 30" /> -->
 
   <node pkg="tf" type="static_transform_publisher" name="camera_link_broadcaster"
-      args="0.595826 0.0344962 1.20018   0.719262 0.694493 -0.0151909 -0.0105538 panda_link0 top_camera_color_optical_frame 30" />
+      args="0.426389 0.045052 1.0324   0.720484 -0.693208 -0.00117752 -0.0190581 panda_link0 top_camera_color_optical_frame 30" />
 
   <node pkg="tf" type="static_transform_publisher" name="world2camera_link_broadcaster"
-      args="0.595826 0.0344962 1.20018   0.719262 0.694493 -0.0151909 -0.0105538  /world /camera_link 30" />
+      args="0.426389 0.045052 1.0324   0.720484 -0.693208 -0.00117752 -0.0190581  /world /camera_link 30" />
 
 
   <node name="configure_temporal_filter" pkg="dynamic_reconfigure" type="dynparam"
