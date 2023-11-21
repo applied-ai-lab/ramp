@@ -1,5 +1,5 @@
 # RAMP: A Benchmark for Evaluating Robotic Assembly Manipulation and Planning
-A baseline approach to solving the easy class of assemblies in the RAMP benchmark.
+A baseline approach to solving the easy class of assemblies in the [RAMP benchmark](https://sites.google.com/oxfordrobotics.institute/ramp).
 
 ![Teaser figure](./media/assembly_timelapse.png)
 
